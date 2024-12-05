@@ -225,6 +225,12 @@ public class V8Scope implements IV8Creatable, IJavetClosable {
     }
 
     @Override
+    public void createV8ValueFunctionA(JavetCallbackContext jctx) throws JavetException {
+        Objects.requireNonNull(v8Runtime, ERROR_MESSAGE_V8_RUNTIME_CANNOT_BE_EMPTY);
+        v8Runtime.createV8ValueFunctionA(jctx);
+    }
+
+    @Override
     public V8ValueInteger createV8ValueInteger(int integerValue) throws JavetException {
         Objects.requireNonNull(v8Runtime, ERROR_MESSAGE_V8_RUNTIME_CANNOT_BE_EMPTY);
         return v8Runtime.createV8ValueInteger(integerValue);
