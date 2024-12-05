@@ -252,7 +252,7 @@ JNIEXPORT jobject JNICALL Java_com_caoccao_javet_interop_V8Native_functionCreate
  * Method:    functionCreateA
  * Signature: (JLjava/lang/Object;)V;
  */
-JNIEXPORT jobject JNICALL Java_com_caoccao_javet_interop_V8Native_functionCreateA
+JNIEXPORT void JNICALL Java_com_caoccao_javet_interop_V8Native_functionCreateA
   (JNIEnv *, jobject, jlong, jobject);
 
 /*
