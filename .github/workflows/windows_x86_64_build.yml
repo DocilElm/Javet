@@ -17,9 +17,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: i18n
-            cmake_flag: -DENABLE_I18N=1
-            v8_flag: v8_enable_i18n_support=true
           - name: non-i18n
             cmake_flag:
             v8_flag: v8_enable_i18n_support=false
@@ -71,12 +68,6 @@ jobs:
         ../depot_tools/ninja.bat -C out.gn/x64.release v8_monolith
         mv out.gn out.gn.${{ matrix.name }}
 
-    - name: Copy the i18n
-      if: matrix.name == 'i18n'
-      run: |
-        mkdir icu-v8
-        copy ..\google\v8\third_party\icu\common\*.dat icu-v8
-
     - name: Setup JDK 8
       uses: actions/setup-java@v4
       with:
@@ -105,91 +96,8 @@ jobs:
         name: javet-windows-v8-x86_64-${{ env.JAVET_VERSION }}-${{ matrix.name }}
         path: src\main\resources\*.dll
 
-    - name: Upload the i18n
-      uses: actions/upload-artifact@v4
-      if: matrix.name == 'i18n'
-      with:
-        name: icu-v8
-        path: icu-v8\*.dat
-
-  build_javet_node:
-    strategy:
-      matrix:
-        include:
-          - name: i18n
-            cmake_flag: -DENABLE_I18N=1
-            node_flag: full-icu
-          - name: non-i18n
-            cmake_flag:
-            node_flag: without-intl
-
-    name: Build Javet Node ${{ matrix.name }}
-    runs-on: windows-latest
-
-    steps:
-
-    - name: Set git to use LF
-      run: |
-        git config --global core.autocrlf false
-        git config --global core.eol lf
-
-    - name: Checkout the code
-      uses: actions/checkout@v4
-
-    - name: Install NASM
-      run: choco install nasm
-
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11' 
-
-    - name: Build Node.js
-      run: |
-        cd ${{ env.ROOT }}
-        git clone https://github.com/nodejs/node.git
-        cd node
-        git checkout v${{ env.JAVET_NODE_VERSION }}
-        .\vcbuild.bat static ${{ matrix.node_flag }} vs2022
-        move out out.${{ matrix.name }}
-
-    - name: Copy the i18n
-      if: matrix.name == 'i18n'
-      run: |
-        mkdir icu-node
-        copy ..\node\deps\icu-tmp\*.dat icu-node
-
-    - name: Setup JDK 8
-      uses: actions/setup-java@v4
-      with:
-        distribution: corretto
-        java-version: 8
-
-    - name: Setup Cmake
-      uses: jwlawson/actions-setup-cmake@v2.0
-      with:
-        cmake-version: '3.23.x'
-
-    - name: Build Javet JNI
-      run: |
-        cd ${{ env.ROOT }}\Javet\cpp
-        .\build-windows.cmd -DNODE_DIR=${{ env.ROOT }}\node ${{ matrix.cmake_flag }}
-
-    - name: Upload the Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: javet-windows-node-x86_64-${{ env.JAVET_VERSION }}-${{ matrix.name }}
-        path: src\main\resources\*.dll
-
-    - name: Upload the i18n
-      uses: actions/upload-artifact@v4
-      if: matrix.name == 'i18n'
-      with:
-        name: icu-node
-        path: icu-node\*.dat
-
   build_javet_jar:
-    needs: [build_javet_v8, build_javet_node]
+    needs: [build_javet_v8]
     name: Build Javet Jar
     runs-on: windows-latest
 
@@ -217,64 +125,16 @@ jobs:
     - name: Install 7zip
       run: choco install 7zip.install
 
-    - name: Download Javet Node i18n
-      uses: actions/download-artifact@v4
-      with:
-        name: javet-windows-node-x86_64-${{ env.JAVET_VERSION }}-i18n
-        path: src\main\resources\
-
-    - name: Download Javet Node non-i18n
-      uses: actions/download-artifact@v4
-      with:
-        name: javet-windows-node-x86_64-${{ env.JAVET_VERSION }}-non-i18n
-        path: src\main\resources\
-
-    - name: Download Javet V8 i18n
-      uses: actions/download-artifact@v4
-      with:
-        name: javet-windows-v8-x86_64-${{ env.JAVET_VERSION }}-i18n
-        path: src\main\resources\
-
     - name: Download Javet V8 non-i18n
       uses: actions/download-artifact@v4
       with:
         name: javet-windows-v8-x86_64-${{ env.JAVET_VERSION }}-non-i18n
         path: src\main\resources\
 
-    - name: Prepare i18n Location
-      run: |
-        mkdir icu-node
-        mkdir icu-v8
-
-    - name: Download i18n node
-      uses: actions/download-artifact@v4
-      with:
-        name: icu-node
-        path: icu-node
-
-    - name: Download i18n V8
-      uses: actions/download-artifact@v4
-      with:
-        name: icu-v8
-        path: icu-v8
-
-    - name: Copy the i18n
-      run: |
-        mkdir ..\node\deps\icu-tmp
-        move icu-node\*.dat ..\node\deps\icu-tmp
-        mkdir ..\google\v8\third_party\icu\common
-        move icu-v8\*.dat ..\google\v8\third_party\icu\common
-
     - name: Build the Artifact
       shell: bash
       run: |
         touch src/main/resources/libjavet-v8-*-x86_64.v*
-        gradle build test --rerun-tasks
-        touch src/main/resources/libjavet-node-*-x86_64.v*
-        gradle build test --rerun-tasks
-        touch src/main/resources/libjavet-v8-*-x86_64-i18n.v*
-        gradle build test --rerun-tasks
-        touch src/main/resources/libjavet-node-*-x86_64-i18n.v*
         gradle build test --rerun-tasks
         gradle build generatePomFileForGeneratePomPublication
         7z d build/libs/javet-${{ env.JAVET_VERSION }}-sources.jar *.dll
@@ -286,21 +146,6 @@ jobs:
         path: |
           build\libs\*.jar
           build\libs\*.pom
-
-    - name: Delete Javet Node i18n
-      uses: geekyeggo/delete-artifact@v4
-      with:
-        name: javet-windows-node-x86_64-${{ env.JAVET_VERSION }}-i18n
-
-    - name: Delete Javet Node non-i18n
-      uses: geekyeggo/delete-artifact@v4
-      with:
-        name: javet-windows-node-x86_64-${{ env.JAVET_VERSION }}-non-i18n
-
-    - name: Delete Javet V8 i18n
-      uses: geekyeggo/delete-artifact@v4
-      with:
-        name: javet-windows-v8-x86_64-${{ env.JAVET_VERSION }}-i18n
 
     - name: Delete Javet V8 non-i18n
       uses: geekyeggo/delete-artifact@v4
