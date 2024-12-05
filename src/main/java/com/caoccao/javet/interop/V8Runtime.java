@@ -897,6 +897,15 @@ public class V8Runtime implements IJavetClosable, IV8Creatable, IV8Convertible {
         return getExecutor(codeString).execute();
     }
 
+    @CheckReturnValue
+    @Override
+    public void createV8ValueFunctionA(JavetCallbackContext jctx) throws JavetException {
+        v8Native.functionCreateA(handle, Objects.requireNonNull(jctx));
+        synchronized (callbackContextLock) {
+            callbackContextMap.put(jctx.getHandle(), jctx);
+        }
+    }
+
     @Override
     public V8ValueInteger createV8ValueInteger(int integerValue) throws JavetException {
         if (integerValue >= V8_VALUE_NUMBER_LOWER_BOUND && integerValue < V8_VALUE_NUMBER_UPPER_BOUND) {

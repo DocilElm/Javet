@@ -98,6 +98,8 @@ public interface IV8Native {
 
     Object functionCreate(long v8RuntimeHandle, Object callbackContext);
 
+    void functionCreateA(long v8RuntimeHandle, Object callbackContext);
+
     boolean functionDiscardCompiled(long v8RuntimeHandle, long v8ValueHandle, int v8ValueType);
 
     String[] functionGetArguments(long v8RuntimeHandle, long v8ValueHandle, int v8ValueType);

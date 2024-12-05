@@ -189,6 +189,37 @@ JNIEXPORT jobject JNICALL Java_com_caoccao_javet_interop_V8Native_functionCreate
     return Javet::Converter::ToExternalV8ValueUndefined(jniEnv, v8Runtime);
 }
 
+JNIEXPORT void JNICALL Java_com_caoccao_javet_interop_V8Native_functionCreateA
+(JNIEnv* jniEnv, jobject caller, jlong v8RuntimeHandle, jobject mCallbackContext) {
+    RUNTIME_HANDLES_TO_OBJECTS_WITH_SCOPE(v8RuntimeHandle);
+    auto javetCallbackContextReferencePointer =
+        new Javet::Callback::JavetCallbackContextReference(jniEnv, mCallbackContext);
+    INCREASE_COUNTER(Javet::Monitor::CounterType::NewJavetCallbackContextReference);
+    auto v8LocalContextHandle =
+        v8::BigInt::New(v8Context->GetIsolate(), TO_NATIVE_INT_64(javetCallbackContextReferencePointer));
+    javetCallbackContextReferencePointer->v8PersistentCallbackContextHandlePointer =
+        new V8PersistentBigInt(v8Context->GetIsolate(), v8LocalContextHandle);
+    INCREASE_COUNTER(Javet::Monitor::CounterType::NewPersistentCallbackContextReference);
+    auto v8MaybeLocalFunction =
+        v8::Function::New(v8Context, Javet::Callback::JavetFunctionCallback, v8LocalContextHandle);
+    if (v8MaybeLocalFunction.IsEmpty()) {
+        if (Javet::Exceptions::HandlePendingException(jniEnv, v8Runtime, v8Context, "Function allocation failed")) {
+            return;
+        }
+    }
+    else {
+        auto v8LocalFunction = v8MaybeLocalFunction.ToLocalChecked();
+        if (!v8LocalFunction.IsEmpty()) {
+            javetCallbackContextReferencePointer->v8PersistentCallbackContextHandlePointer->SetWeak(
+                javetCallbackContextReferencePointer,
+                Javet::Callback::JavetCloseWeakCallbackContextHandle,
+                v8::WeakCallbackType::kParameter);
+            // return v8Runtime->SafeToExternalV8Value(jniEnv, v8Context, v8LocalFunction);
+        }
+    }
+    // return Javet::Converter::ToExternalV8ValueUndefined(jniEnv, v8Runtime);
+}
+
 JNIEXPORT jboolean JNICALL Java_com_caoccao_javet_interop_V8Native_functionDiscardCompiled
 (JNIEnv* jniEnv, jobject caller, jlong v8RuntimeHandle, jlong v8ValueHandle, jint v8ValueType) {
     RUNTIME_AND_VALUE_HANDLES_TO_OBJECTS_WITH_SCOPE(v8RuntimeHandle, v8ValueHandle);

@@ -140,6 +140,9 @@ class V8Native implements IV8Native {
     public native Object functionCreate(long v8RuntimeHandle, Object callbackContext);
 
     @Override
+    public native void functionCreateA(long v8RuntimeHandle, Object callbackContext);
+
+    @Override
     public native boolean functionDiscardCompiled(long v8RuntimeHandle, long v8ValueHandle, int v8ValueType);
 
     @Override

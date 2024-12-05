@@ -184,6 +184,9 @@ public interface IV8Creatable {
     @CheckReturnValue
     V8ValueFunction createV8ValueFunction(String codeString) throws JavetException;
 
+    @CheckReturnValue
+    void createV8ValueFunctionA(JavetCallbackContext jctx) throws JavetException;
+
     /**
      * Create V8 value integer.
      *
