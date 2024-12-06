@@ -134,6 +134,7 @@ jobs:
       shell: bash
       run: |
         touch src/main/resources/libjavet-v8-*-x86_64.v*
+        gradle build test --rerun-tasks
         gradle build generatePomFileForGeneratePomPublication
         7z d build/libs/javet-${{ env.JAVET_VERSION }}-sources.jar *.dll
 
