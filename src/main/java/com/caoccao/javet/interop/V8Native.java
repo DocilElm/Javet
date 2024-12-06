@@ -404,6 +404,9 @@ class V8Native implements IV8Native {
             long v8RuntimeHandle, long v8ValueHandle, int v8ValueType, String propertyName);
 
     @Override
+    public native long objectGetPrivatePropertyA(long v8RuntimeHandle, long v8ValueHandle, int v8ValueType, String propertyName);
+
+    @Override
     public native Object objectGetProperty(long v8RuntimeHandle, long v8ValueHandle, int v8ValueType, Object key);
 
     @Override

@@ -410,6 +410,12 @@ public final class V8Internal {
     }
 
     @CheckReturnValue
+    public long objectGetPrivatePropertyA(IV8ValueObject iV8ValueObject, String propertyName)
+            throws JavetException {
+        return v8Runtime.objectGetPrivatePropertyA(iV8ValueObject, propertyName);
+    }
+
+    @CheckReturnValue
     public <T extends V8Value> T objectGetProperty(IV8ValueObject iV8ValueObject, V8Value key) throws JavetException {
         return v8Runtime.objectGetProperty(iV8ValueObject, key);
     }

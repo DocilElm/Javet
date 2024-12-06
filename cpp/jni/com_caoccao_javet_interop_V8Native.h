@@ -889,6 +889,14 @@ JNIEXPORT jobject JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPriva
 
 /*
  * Class:     com_caoccao_javet_interop_V8Native
+ * Method:    objectGetPrivatePropertyA
+ * Signature: (JJILjava/lang/String;)J;
+ */
+JNIEXPORT jlong JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPrivatePropertyA
+  (JNIEnv *, jobject, jlong, jlong, jint, jstring);
+
+/*
+ * Class:     com_caoccao_javet_interop_V8Native
  * Method:    objectGetProperty
  * Signature: (JJILjava/lang/Object;)Ljava/lang/Object;
  */

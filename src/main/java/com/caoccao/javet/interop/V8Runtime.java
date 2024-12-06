@@ -2543,6 +2543,13 @@ public class V8Runtime implements IJavetClosable, IV8Creatable, IV8Convertible {
                 handle, iV8ValueObject.getHandle(), iV8ValueObject.getType().getId(), propertyName);
     }
 
+    @SuppressWarnings("RedundantThrows")
+    @CheckReturnValue
+    long objectGetPrivatePropertyA(IV8ValueObject iv8ValueObject, String propertyName)
+        throws JavetException {
+        return v8Native.objectGetPrivatePropertyA(handle, iv8ValueObject.getHandle(), iv8ValueObject.getType().getId(), propertyName);
+    }
+
     /**
      * Gets a property from an object by a property key.
      *

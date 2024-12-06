@@ -268,6 +268,8 @@ public interface IV8Native {
 
     Object objectGetPrivateProperty(long v8RuntimeHandle, long v8ValueHandle, int v8ValueType, String propertyName);
 
+    long objectGetPrivatePropertyA(long v8RuntimeHandle, long v8ValueHandle, int v8ValueType, String propertyName);
+
     Object objectGetProperty(long v8RuntimeHandle, long v8ValueHandle, int v8ValueType, Object key);
 
     Object objectGetPropertyNames(long v8RuntimeHandle, long v8ValueHandle, int v8ValueType);

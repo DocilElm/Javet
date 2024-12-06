@@ -366,6 +366,31 @@ JNIEXPORT jobject JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPriva
     return Javet::Converter::ToExternalV8ValueUndefined(jniEnv, v8Runtime);
 }
 
+// Here comes the memory leaks probably
+JNIEXPORT jlong JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPrivatePropertyA
+  (JNIEnv* jniEnv, jobject caller, jlong v8RuntimeHandle, jlong v8ValueHandle, jint v8ValueType, jstring mKey) {
+    RUNTIME_AND_VALUE_HANDLES_TO_OBJECTS_WITH_SCOPE(v8RuntimeHandle, v8ValueHandle);
+    if (v8LocalValue->IsObject()) {
+        V8TryCatch v8TryCatch(v8Context->GetIsolate());
+        auto v8LocalStringKey = Javet::Converter::ToV8String(jniEnv, v8Context, mKey);
+        auto v8LocalPrivateKey = v8::Private::ForApi(v8Context->GetIsolate(), v8LocalStringKey);
+        auto v8MaybeLocalValue = v8LocalValue.as<v8::Object>()->GetPrivate(v8Context, v8LocalPrivateKey);
+
+        if (V8TryCatch.HasCaught()) {
+            return Javet::Exceptions::ThrowJavetExectutionException(jniEnv, v8Runtime, v8Context, V8TryCatch);
+        }
+        if (v8MaybeLocalValue.IsEmpty()) {
+            if (Javet::Exception::HandlePendingException(jniEnv, v8Runtime, v8Context)) {
+                return nullptr;
+            }
+        } else {
+            return *V8MaybeLocalValue.ToLocalChecked();
+        }
+    }
+
+    return 0;
+}
+
 JNIEXPORT jobject JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetProperty
 (JNIEnv* jniEnv, jobject caller, jlong v8RuntimeHandle, jlong v8ValueHandle, jint v8ValueType, jobject key) {
     RUNTIME_AND_VALUE_HANDLES_TO_OBJECTS_WITH_SCOPE(v8RuntimeHandle, v8ValueHandle);

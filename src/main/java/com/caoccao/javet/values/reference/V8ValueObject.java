@@ -526,6 +526,12 @@ public class V8ValueObject extends V8ValueReference implements IV8ValueObject {
     }
 
     @Override
+    public long getPrivatePropertyA(String propertyName) throws JavetException {
+        return checkV8Runtime().getV8Internal().objectGetPrivatePropertyA(
+                this, Objects.requireNonNull(propertyName));
+    }
+
+    @Override
     @CheckReturnValue
     public <T extends V8Value> T getProperty(Object key) throws JavetException {
         try (V8VirtualValue virtualKey = new V8VirtualValue(
