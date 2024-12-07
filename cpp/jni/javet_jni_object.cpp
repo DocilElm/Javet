@@ -374,20 +374,19 @@ JNIEXPORT jlong JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPrivate
         V8TryCatch v8TryCatch(v8Context->GetIsolate());
         auto v8LocalStringKey = Javet::Converter::ToV8String(jniEnv, v8Context, mKey);
         auto v8LocalPrivateKey = v8::Private::ForApi(v8Context->GetIsolate(), v8LocalStringKey);
-        auto v8MaybeLocalValue = v8LocalValue.as<v8::Object>()->GetPrivate(v8Context, v8LocalPrivateKey);
-
-        if (V8TryCatch.HasCaught()) {
-            return Javet::Exceptions::ThrowJavetExectutionException(jniEnv, v8Runtime, v8Context, V8TryCatch);
+        auto v8MaybeLocalValue = v8LocalValue.As<v8::Object>()->GetPrivate(v8Context, v8LocalPrivateKey);
+        if (v8TryCatch.HasCaught()) {
+            return Javet::Exceptions::ThrowJavetExecutionException(jniEnv, v8Runtime, v8Context, v8TryCatch);
         }
         if (v8MaybeLocalValue.IsEmpty()) {
-            if (Javet::Exception::HandlePendingException(jniEnv, v8Runtime, v8Context)) {
+            if (Javet::Exceptions::HandlePendingException(jniEnv, v8Runtime, v8Context)) {
                 return nullptr;
             }
-        } else {
-            return *V8MaybeLocalValue.ToLocalChecked();
+        }
+        else {
+            return *v8MaybeLocalValue.ToLocalChecked();
         }
     }
-
     return 0;
 }
 
