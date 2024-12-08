@@ -380,15 +380,15 @@ JNIEXPORT jlong JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPrivate
         }
         if (v8MaybeLocalValue.IsEmpty()) {
             if (Javet::Exceptions::HandlePendingException(jniEnv, v8Runtime, v8Context)) {
-                return nullptr;
+                return 0;
             }
         }
         else {
             v8::Local<v8::Value> value = maybeValue.ToLocalChecked();
+            void* ptr = reinterpret_cast<void*>(*value);
+            jlong ptrA = reinterpret_cast<jlong>(ptr);
 
-            void* rawPointer = reinterpret_cast<void*>(value.As<v8::External>()->Value());
-
-            return reinterpret_cast<jlong>(rawPointer);
+            return ptrA;
         }
     }
     return 0;
