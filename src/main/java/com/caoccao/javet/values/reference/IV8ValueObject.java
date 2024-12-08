@@ -531,7 +531,7 @@ public interface IV8ValueObject extends IV8ValueReference {
     <T extends V8Value> T getPrivateProperty(String propertyName) throws JavetException;
 
     @CheckReturnValue
-    long getPrivatePropertyA(String propertyName) throws JavetException;
+    int getPrivatePropertyA(String propertyName) throws JavetException;
 
     /**
      * Gets private property value as boolean by name string.
