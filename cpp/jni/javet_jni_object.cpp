@@ -16,6 +16,7 @@
  */
 
 #include "javet_jni.h"
+#include <unordered_map>
 
 namespace Javet {
     namespace V8ValueObject {
@@ -366,8 +367,11 @@ JNIEXPORT jobject JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPriva
     return Javet::Converter::ToExternalV8ValueUndefined(jniEnv, v8Runtime);
 }
 
+std::unordered_map<int, v8::Local<v8::Value>> cache;
+int currentId = 1;
+
 // Here comes the memory leaks probably
-JNIEXPORT jlong JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPrivatePropertyA
+JNIEXPORT jint JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPrivatePropertyA
   (JNIEnv* jniEnv, jobject caller, jlong v8RuntimeHandle, jlong v8ValueHandle, jint v8ValueType, jstring mKey) {
     RUNTIME_AND_VALUE_HANDLES_TO_OBJECTS_WITH_SCOPE(v8RuntimeHandle, v8ValueHandle);
     if (v8LocalValue->IsObject()) {
@@ -380,15 +384,13 @@ JNIEXPORT jlong JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPrivate
         }
         if (v8MaybeLocalValue.IsEmpty()) {
             if (Javet::Exceptions::HandlePendingException(jniEnv, v8Runtime, v8Context)) {
-                return 0;
+                return -1;
             }
         }
         else {
             v8::Local<v8::Value> value = v8MaybeLocalValue.ToLocalChecked();
-            void* ptr = reinterpret_cast<void*>(value);
-            jlong ptrA = reinterpret_cast<jlong>(ptr);
-
-            return ptrA;
+            int id = currentId++;
+            cache[id] = value
         }
     }
     return 0;

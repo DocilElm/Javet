@@ -2545,7 +2545,7 @@ public class V8Runtime implements IJavetClosable, IV8Creatable, IV8Convertible {
 
     @SuppressWarnings("RedundantThrows")
     @CheckReturnValue
-    long objectGetPrivatePropertyA(IV8ValueObject iv8ValueObject, String propertyName)
+    int objectGetPrivatePropertyA(IV8ValueObject iv8ValueObject, String propertyName)
         throws JavetException {
         return v8Native.objectGetPrivatePropertyA(handle, iv8ValueObject.getHandle(), iv8ValueObject.getType().getId(), propertyName);
     }
