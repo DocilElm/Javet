@@ -384,8 +384,8 @@ JNIEXPORT jlong JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPrivate
             }
         }
         else {
-            v8::Local<v8::Value> value = maybeValue.ToLocalChecked();
-            void* ptr = reinterpret_cast<void*>(*value);
+            v8::Local<v8::Value> value = v8MaybeLocalValue.ToLocalChecked();
+            void* ptr = reinterpret_cast<void*>(value);
             jlong ptrA = reinterpret_cast<jlong>(ptr);
 
             return ptrA;
