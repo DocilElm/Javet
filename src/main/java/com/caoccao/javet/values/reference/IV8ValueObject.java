@@ -1338,6 +1338,8 @@ public interface IV8ValueObject extends IV8ValueReference {
      */
     boolean setPrivateProperty(String propertyName, Object propertyValue) throws JavetException;
 
+    boolean setPrivatePropertyA(String propertyName, int key) throws JavetException;
+
     /**
      * Sets private property to null by name string.
      *

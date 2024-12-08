@@ -2874,6 +2874,13 @@ public class V8Runtime implements IJavetClosable, IV8Creatable, IV8Convertible {
                 handle, iV8ValueObject.getHandle(), iV8ValueObject.getType().getId(), propertyName, propertyValue);
     }
 
+    boolean objectSetPrivatePropertyA(
+            IV8ValueObject iv8ValueObject, String propertyName, int key) throws JavetException {
+        return v8Native.objectSetPrivatePropertyA(
+                handle, iv8ValueObject.getHandle(), iv8ValueObject.getType().getId(), propertyName, key
+        );
+    }
+
     /**
      * Sets property.
      *

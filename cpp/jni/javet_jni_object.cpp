@@ -864,6 +864,22 @@ JNIEXPORT jboolean JNICALL Java_com_caoccao_javet_interop_V8Native_objectSetPriv
     return false;
 }
 
+JNIEXPORT jboolean JNICALL Java_com_caoccao_javet_interop_V8Native_objectSetPrivatePropertyA
+(JNIEnv* jniEnv, jobject caller, jlong v8RuntimeHandle, jlong v8ValueHandle, jint v8ValueType, jstring mKey, jint mValue) {
+    RUNTIME_AND_VALUE_HANDLES_TO_OBJECTS_WITH_SCOPE(v8RuntimeHandle, v8ValueHandle);
+    if (v8LocalValue->IsObject()) {
+        auto v8LocalStringKey = Javet::Converter::ToV8String(jniEnv, v8Context, mKey);
+        auto v8LocalPrivateKey = v8::Private::ForApi(v8Context->GetIsolate(), v8LocalStringKey);
+        auto v8LocalPrivateValue = cache[mValue]
+        auto v8MaybeBool = v8LocalValue.As<v8::Object>()->SetPrivate(v8Context, v8LocalPrivateKey, v8LocalPrivateValue);
+        if (v8MaybeBool.IsNothing()) {
+            Javet::Exceptions::HandlePendingException(jniEnv, v8Runtime, v8Context);
+        }
+        return v8MaybeBool.FromMaybe(false);
+    }
+    return false;
+}
+
 JNIEXPORT jboolean JNICALL Java_com_caoccao_javet_interop_V8Native_objectSetProperty
 (JNIEnv* jniEnv, jobject caller, jlong v8RuntimeHandle, jlong v8ValueHandle, jint v8ValueType, jobject key, jobject value) {
     RUNTIME_AND_VALUE_HANDLES_TO_OBJECTS_WITH_SCOPE(v8RuntimeHandle, v8ValueHandle);

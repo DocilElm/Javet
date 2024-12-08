@@ -510,6 +510,11 @@ public final class V8Internal {
         return v8Runtime.objectSetPrivateProperty(iV8ValueObject, propertyName, propertyValue);
     }
 
+    public boolean objectSetPrivatePropertyA(
+            IV8ValueObject iv8ValueObject, String propertyName, int key) throws JavetException {
+        return v8Runtime.objectSetPrivatePropertyA(iv8ValueObject, propertyName, key);
+    }
+
     public boolean objectSetProperty(
             IV8ValueObject iV8ValueObject, V8Value key, V8Value value)
             throws JavetException {

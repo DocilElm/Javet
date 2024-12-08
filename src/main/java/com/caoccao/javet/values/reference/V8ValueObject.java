@@ -732,6 +732,12 @@ public class V8ValueObject extends V8ValueReference implements IV8ValueObject {
     }
 
     @Override
+    public boolean setPrivatePropertyA(String propertyName, int key) throws JavetException {
+        Objects.requireNonNull(propertyName);
+        return v8Runtime.getV8Internal().objectSetPrivatePropertyA(this, propertyName, key);
+    }
+
+    @Override
     public boolean setProperty(Object key, Object value) throws JavetException {
         try (V8VirtualValue virtualKey = new V8VirtualValue(
                 checkV8Runtime(), OBJECT_CONVERTER, Objects.requireNonNull(key));

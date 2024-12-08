@@ -250,7 +250,7 @@ JNIEXPORT jobject JNICALL Java_com_caoccao_javet_interop_V8Native_functionCreate
 /*
  * Class:     com_caoccao_javet_interop_V8Native
  * Method:    functionCreateA
- * Signature: (JLjava/lang/Object;)V;
+ * Signature: (JLjava/lang/Object;)V
  */
 JNIEXPORT void JNICALL Java_com_caoccao_javet_interop_V8Native_functionCreateA
   (JNIEnv *, jobject, jlong, jobject);
@@ -890,7 +890,7 @@ JNIEXPORT jobject JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPriva
 /*
  * Class:     com_caoccao_javet_interop_V8Native
  * Method:    objectGetPrivatePropertyA
- * Signature: (JJILjava/lang/String;)I;
+ * Signature: (JJILjava/lang/String;)I
  */
 JNIEXPORT jint JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPrivatePropertyA
   (JNIEnv *, jobject, jlong, jlong, jint, jstring);
@@ -1038,6 +1038,14 @@ JNIEXPORT jboolean JNICALL Java_com_caoccao_javet_interop_V8Native_objectSetNull
  */
 JNIEXPORT jboolean JNICALL Java_com_caoccao_javet_interop_V8Native_objectSetPrivateProperty
   (JNIEnv *, jobject, jlong, jlong, jint, jstring, jobject);
+
+/*
+ * Class:     com_caoccao_javet_interop_V8Native
+ * Method:    objectSetPrivatePropertyA
+ * Signature: (JJILjava/lang/String;I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_caoccao_javet_interop_V8Native_objectSetPrivatePropertyA
+  (JNIEnv *, jobject, jlong, jlong, jint, jstring, jint);
 
 /*
  * Class:     com_caoccao_javet_interop_V8Native

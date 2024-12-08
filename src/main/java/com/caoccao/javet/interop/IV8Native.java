@@ -310,6 +310,8 @@ public interface IV8Native {
 
     boolean objectSetPrivateProperty(long v8RuntimeHandle, long v8ValueHandle, int v8ValueType, String key, Object value);
 
+    boolean objectSetPrivatePropertyA(long v8RuntimeHandle, long v8ValueHandle, int v8ValueType, String key, int value);
+
     boolean objectSetProperty(long v8RuntimeHandle, long v8ValueHandle, int v8ValueType, Object key, Object value);
 
     boolean objectSetPrototype(long v8RuntimeHandle, long v8ValueHandle, int v8ValueType, long v8ValueHandlePrototype);
