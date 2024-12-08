@@ -391,6 +391,7 @@ JNIEXPORT jint JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPrivateP
             v8::Local<v8::Value> value = v8MaybeLocalValue.ToLocalChecked();
             int id = currentId++;
             cache[id] = value
+            return id;
         }
     }
     return 0;
