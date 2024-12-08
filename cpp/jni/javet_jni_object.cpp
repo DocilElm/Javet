@@ -380,7 +380,7 @@ JNIEXPORT jint JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPrivateP
         auto v8LocalPrivateKey = v8::Private::ForApi(v8Context->GetIsolate(), v8LocalStringKey);
         auto v8MaybeLocalValue = v8LocalValue.As<v8::Object>()->GetPrivate(v8Context, v8LocalPrivateKey);
         if (v8TryCatch.HasCaught()) {
-            return Javet::Exceptions::ThrowJavetExecutionException(jniEnv, v8Runtime, v8Context, v8TryCatch);
+            return -1;
         }
         if (v8MaybeLocalValue.IsEmpty()) {
             if (Javet::Exceptions::HandlePendingException(jniEnv, v8Runtime, v8Context)) {
@@ -390,7 +390,7 @@ JNIEXPORT jint JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPrivateP
         else {
             v8::Local<v8::Value> value = v8MaybeLocalValue.ToLocalChecked();
             int id = currentId++;
-            cache[id] = value
+            cache[id] = value;
             return id;
         }
     }
