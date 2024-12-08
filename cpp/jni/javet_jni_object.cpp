@@ -384,10 +384,14 @@ JNIEXPORT jlong JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetPrivate
             }
         }
         else {
-            return reinterpret_cast<jlong>(v8MaybeLocalValue.ToLocalChecked());
+            v8::Local<v8::Value> value = maybeValue.ToLocalChecked();
+
+            void* rawPointer = reinterpret_cast<void*>(value.As<v8::External>()->Value());
+
+            return reinterpret_cast<jlong>(rawPointer);
         }
     }
-    return reinterpret_cast<jlong>(0);
+    return 0;
 }
 
 JNIEXPORT jobject JNICALL Java_com_caoccao_javet_interop_V8Native_objectGetProperty
